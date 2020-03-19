@@ -35,3 +35,15 @@ variable "tenant_id" {
 variable "active_directory_domain" {
   description = "The name of the Active Directory domain, for example `consoto.local`"
 }
+
+variable "region" {
+  default = "West US 2"
+}
+
+variable "owner_tag" {
+  default = "chris@na.local"
+}
+
+variable "ttl_tag" {
+  default = "96H"
+}

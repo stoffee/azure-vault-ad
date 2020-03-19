@@ -12,11 +12,11 @@ locals {
 
 resource "azurerm_resource_group" "test" {
   name     = "${local.resource_group_name}"
-  location = "West US 2"
+  location = "${var.region}"
 
   tags = {
-    Owner = "stoffee@hashicorp.com"
-    TTL   = "96h"
+    Owner = "${var.owner_tag}"
+    TTL   = "${var.ttl_tag}"
   }
 }
 

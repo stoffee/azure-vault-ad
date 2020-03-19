@@ -1,6 +1,9 @@
 # Vault + AD demos
 Do not use in production.
 
+## This is for terraform 11
+https://releases.hashicorp.com/terraform/0.11.14/
+
 # 0. Terraform
 Fill in terraform.auto.tfvars (use the .tfvars.example) then
 ```
