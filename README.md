@@ -2,7 +2,7 @@
 Do not use in production.
 
 # 0. Terraform
-Fill in terraform.tfvars (use the .tfvars.example) then
+Fill in terraform.auto.tfvars (use the .tfvars.example) then
 ```
 $ terraform apply
 ```
@@ -18,17 +18,19 @@ password: Y0urPas$w0rd!1
 
 Then run the windows script from your terraform output in a powershell terminal. it should look similar to below.
 
-```bash
-New-ADOrganizationalUnit -Name 'User' -Path 'DC=na,DC=local'; 
-New-ADOrganizationalUnit -Name 'Group' -Path 'DC=na,DC=local'; 
-New-ADGroup -Name 'engineering' -SamAccountName engineering -GroupScope Global -Path 'OU=Group,DC=na,DC=local';
-New-ADUser -SamAccountName alex -Name 'alex' -UserPrincipalName alex@na.local -AccountPassword (ConvertTo-SecureString -AsPlainText 'Password1!' -Force) -Enabled $true -PasswordNeverExpires $true -Path 'OU=User,DC=na,DC=local'; 
-New-ADUser -SamAccountName chris  -Name 'chris'  -UserPrincipalName chris@na.local -AccountPassword (ConvertTo-SecureString -AsPlainText 'Password1!' -Force) -Enabled $true -PasswordNeverExpires $true -Path 'OU=User,DC=na,DC=local'; 
-Add-ADGroupMember -Identity engineering -Members  'CN=alex,OU=User,DC=na,DC=local'; 
-Add-ADGroupMember -Identity engineering -Members  'CN=chris,OU=User,DC=na,DC=local'; 
-Add-ADPrincipalGroupMembership -Identity 'CN=alex,OU=User,DC=na,DC=local' -MemberOf Administrators; 
-Add-ADPrincipalGroupMembership -Identity 'CN=chris,OU=User,DC=na,DC=local' -MemberOf Administrators; 
-Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools; 
+```powershell
+New-ADOrganizationalUnit -Name ‘Admin' -Path 'DC=na,DC=local';
+New-ADOrganizationalUnit -Name ‘General' -Path ‘OU=Admin,DC=na,DC=local';
+New-ADOrganizationalUnit -Name 'Users' -Path ‘OU=General,OU=Admin,DC=na,DC=local';
+New-ADOrganizationalUnit -Name 'Group' -Path 'OU=General,OU=Admin,DC=na,DC=local';
+New-ADGroup -Name 'engineering' -SamAccountName engineering -GroupScope Global -Path 'OU=Group,OU=General,OU=Admin,DC=na,DC=local';
+New-ADUser -SamAccountName alex -Name 'alex' -UserPrincipalName alex@na.local -AccountPassword (ConvertTo-SecureString -AsPlainText 'Password1!' -Force) -Enabled $true -PasswordNeverExpires $true -Path 'OU=Users,OU=General,OU=Admin,DC=na,DC=local';
+New-ADUser -SamAccountName chris  -Name 'chris'  -UserPrincipalName chris@na.local -AccountPassword (ConvertTo-SecureString -AsPlainText 'Password1!' -Force) -Enabled $true -PasswordNeverExpires $true -Path 'OU=Users,OU=General,OU=Admin,DC=na,DC=local';
+Add-ADGroupMember -Identity engineering -Members  'CN=alex,OU=Users,OU=General,OU=Admin,DC=na,DC=local';
+Add-ADGroupMember -Identity engineering -Members  'CN=chris,OU=Users,OU=General,OU=Admin,DC=na,DC=local';
+Add-ADPrincipalGroupMembership -Identity 'CN=alex,OU=Users,OU=General,OU=Admin,DC=na,DC=local' -MemberOf Administrators;
+Add-ADPrincipalGroupMembership -Identity 'CN=chris,OU=Users,OU=General,OU=Admin,DC=na,DC=local' -MemberOf Administrators;
+Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools;
 Install-AdcsCertificationAuthority -CAType EnterpriseRootCA -Force;
 ```
 IMPORTANT: Now restart the Windows box
@@ -66,7 +68,7 @@ certutil  -ca.cert vault.cer
 
 copy the vault.cer file over to the linux machine. and perform the following commands.
 
-```
+```bash
 sudo mkdir /usr/share/ca-certificates/extra
 sudo cp vault.cer /usr/share/ca-certificates/extra/vault.crt
 sudo dpkg-reconfigure ca-certificates
