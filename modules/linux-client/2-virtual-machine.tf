@@ -18,7 +18,6 @@ resource "azurerm_virtual_machine" "vault" {
     version   = "latest"
   }
 
-
   storage_os_disk {
     name              = "${local.virtual_machine_name_vault}-disk1"
     caching           = "ReadWrite"
@@ -62,18 +61,17 @@ data "template_file" "setup" {
   template = "${file("${path.module}/setup.tpl")}"
 
   vars = {
-    vault_download_url = "${var.vault_download_url}"
-    active_directory_domain          = "${var.active_directory_domain}"
-    ad_ip              = "${var.ad_ip}"
+    vault_download_url      = "${var.vault_download_url}"
+    active_directory_domain = "${var.active_directory_domain}"
+    ad_ip                   = "${var.ad_ip}"
   }
 }
-
 
 data "template_file" "format_ssh" {
   template = "connect to host with following command: ssh $${user}@$${admin}"
 
   vars {
-    admin = "${azurerm_public_ip.static-vault.ip_address}"    
+    admin = "${azurerm_public_ip.static-vault.ip_address}"
     user  = "${var.admin_username}"
   }
 }

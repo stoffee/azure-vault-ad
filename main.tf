@@ -3,7 +3,7 @@ provider "azurerm" {
   client_id       = "${var.client_id}"
   client_secret   = "${var.client_secret}"
   tenant_id       = "${var.tenant_id}"
-  version = "=1.3.1"
+  version         = "=1.3.1"
 }
 
 locals {
@@ -13,9 +13,10 @@ locals {
 resource "azurerm_resource_group" "test" {
   name     = "${local.resource_group_name}"
   location = "West US 2"
+
   tags = {
-    Owner       = "stoffee@hashicorp.com"
-    TTL         = "96h"
+    Owner = "stoffee@hashicorp.com"
+    TTL   = "96h"
   }
 }
 
@@ -27,11 +28,12 @@ module "network" {
 }
 
 module "active-directory-domain" {
-  source                        = "./modules/active-directory"
-  resource_group_name           = "${azurerm_resource_group.test.name}"
-  location                      = "${azurerm_resource_group.test.location}"
-  prefix                        = "${var.prefix}"
-  subnet_id                     = "${module.network.domain_controllers_subnet_id}"
+  source              = "./modules/active-directory"
+  resource_group_name = "${azurerm_resource_group.test.name}"
+  location            = "${azurerm_resource_group.test.location}"
+  prefix              = "${var.prefix}"
+  subnet_id           = "${module.network.domain_controllers_subnet_id}"
+
   #active_directory_domain       = "${var.prefix}.local"
   active_directory_domain       = "${var.active_directory_domain}.local"
   active_directory_netbios_name = "${var.active_directory_domain}"
@@ -40,11 +42,12 @@ module "active-directory-domain" {
 }
 
 module "linux-client" {
-  source                    = "./modules/linux-client"
-  resource_group_name       = "${azurerm_resource_group.test.name}"
-  location                  = "${azurerm_resource_group.test.location}"
-  prefix                    = "${var.prefix}"
-  subnet_id                 = "${module.network.domain_clients_subnet_id}"
+  source              = "./modules/linux-client"
+  resource_group_name = "${azurerm_resource_group.test.name}"
+  location            = "${azurerm_resource_group.test.location}"
+  prefix              = "${var.prefix}"
+  subnet_id           = "${module.network.domain_clients_subnet_id}"
+
   #active_directory_domain   = "${var.prefix}.local"
   active_directory_domain   = "${var.active_directory_domain}.local"
   active_directory_username = "${var.admin_username}"
@@ -54,7 +57,7 @@ module "linux-client" {
   public_key                = "${var.public_key}"
   vault_download_url        = "${var.vault_download_url}"
 
-  ad_ip                    = "${module.active-directory-domain.public_ip_address}"
+  ad_ip = "${module.active-directory-domain.public_ip_address}"
 }
 
 output "ad_public_ip" {
@@ -81,6 +84,7 @@ Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools;
 Install-AdcsCertificationAuthority -CAType EnterpriseRootCA -Force;
 
   EOF
+
   vars {
     active_directory_domain = "${var.active_directory_domain}"
   }
@@ -103,10 +107,11 @@ vault write ad/roles/my-application     service_account_name="chris@$${active_di
 vault read ad/creds/my-application
 
   EOF
+
   vars {
     active_directory_domain = "${var.active_directory_domain}"
-    ad_ip  = "${module.active-directory-domain.public_ip_address}"
-    ad_pass = "${var.admin_password}"
+    ad_ip                   = "${module.active-directory-domain.public_ip_address}"
+    ad_pass                 = "${var.admin_password}"
   }
 }
 
@@ -117,7 +122,6 @@ output "Windows_script_info" {
 output "vault_ad_secrets_info" {
   value = "${data.template_file.vault_ad_secrets_script.rendered}"
 }
-
 
 output "linux_ssh_info" {
   value = "${module.linux-client.ssh_info}"

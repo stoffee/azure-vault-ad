@@ -38,7 +38,6 @@ variable "vault_download_url" {
   description = "URL to download Vault binary"
 }
 
-variable "ad_ip" {
-}
+variable "ad_ip" {}
 
 variable "public_key" {}
