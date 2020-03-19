@@ -12,7 +12,7 @@ This can take up to 10 minutes.
 RDP into the windows instance (Use Azure GUI). Use the admin username and password from your terraform variables setup.
 
 ```
-username: na.local\akadmin
+username: stoffee\na.local
 password: Y0urPas$w0rd!1
 ```
 
