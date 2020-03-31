@@ -49,7 +49,7 @@ module "linux-client" {
   subnet_id           = "${module.network.domain_clients_subnet_id}"
 
   #active_directory_domain   = "${var.prefix}.local"
-  active_directory_domain   = "${var.active_directory_domain}.local"
+  active_directory_domain   = "${var.active_directory_domain}"
   active_directory_username = "${var.admin_username}"
   active_directory_password = "${var.admin_password}"
   admin_username            = "${var.admin_username}"
