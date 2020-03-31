@@ -41,9 +41,9 @@ variable "region" {
 }
 
 variable "owner_tag" {
-  default = "chris@na.local"
+  default = "chrisd@hashicorp.com"
 }
 
 variable "ttl_tag" {
-  default = "96H"
+  default = "96"
 }
