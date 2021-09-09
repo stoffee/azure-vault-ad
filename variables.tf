@@ -45,5 +45,5 @@ variable "owner_tag" {
 }
 
 variable "ttl_tag" {
-  default = "96"
+  default = "96h"
 }
