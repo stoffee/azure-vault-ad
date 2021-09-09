@@ -37,7 +37,7 @@ variable "active_directory_domain" {
 }
 
 variable "region" {
-  default = "West US 2"
+  default = "westus2"
 }
 
 variable "owner_tag" {
